@@ -4,6 +4,7 @@ import com.sertifikasi.simpleapp.model.Barang;
 import com.sertifikasi.simpleapp.repository.BarangRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.lang.NonNull;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -39,7 +40,7 @@ public class BarangController {
     
     //Only Accecpt Json in body
     @PostMapping("/barang/add")
-    public ResponseEntity<?> addBarang(@RequestBody Barang barang) {
+    public ResponseEntity<?> addBarang(@NonNull @RequestBody Barang barang) {
         try {
             repo.save(barang);
             return new ResponseEntity<Barang>(barang, HttpStatus.OK);
