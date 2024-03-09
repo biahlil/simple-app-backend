@@ -2,9 +2,13 @@ package com.sertifikasi.simpleapp.controller;
 
 import com.sertifikasi.simpleapp.model.Barang;
 import com.sertifikasi.simpleapp.repository.BarangRepository;
+
+import jakarta.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.lang.NonNull;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -18,6 +22,7 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
+@Validated
 public class BarangController {
     
     @Autowired
@@ -30,7 +35,7 @@ public class BarangController {
     }
 
     @GetMapping("/barang{kodeBarang}")
-    public  ResponseEntity<?> getBarangByid(@RequestParam Barang kodeBarang) {
+    public  ResponseEntity<?> getBarangByid(@Valid @RequestParam Barang kodeBarang) {
         Optional<Barang> barangOptional = repo.findById(kodeBarang.getKodeBarang());
         if (barangOptional.isPresent()) {
             return new ResponseEntity<>(barangOptional.get(), HttpStatus.OK);
@@ -42,7 +47,8 @@ public class BarangController {
     //Only Accecpt Json in body
     // Bug No 1: kodeBarang is not unique
     @PostMapping("/barang/add")
-    public ResponseEntity<?> addBarang(@NonNull @RequestBody Barang barang) {
+    public ResponseEntity<?> addBarang(@Valid @NonNull @RequestBody Barang barang) {
+        
         try {
             repo.save(barang);
             return new ResponseEntity<Barang>(barang, HttpStatus.OK);
@@ -52,7 +58,7 @@ public class BarangController {
     }
 
     @PutMapping("/barang/update/{kodeBarang}")
-    public ResponseEntity<?> updateBarang(@PathVariable("kodeBarang") int kodeBarang, @RequestBody Barang barang) {
+    public ResponseEntity<?> updateBarang(@Valid @PathVariable("kodeBarang") int kodeBarang, @RequestBody Barang barang) {
     Optional<Barang> barangOptional = repo.findById(kodeBarang);
     if (barangOptional.isPresent()) {
         Barang barangToSave = barangOptional.get();
@@ -76,7 +82,7 @@ public class BarangController {
     
 
     @DeleteMapping("/barang/delete/{kodeBarang}")
-    public ResponseEntity<?> deleteBarang(@PathVariable("kodeBarang") int kodeBarang) {
+    public ResponseEntity<?> deleteBarang(@Valid @PathVariable("kodeBarang") int kodeBarang) {
         try {
             repo.deleteById(kodeBarang);
             return new ResponseEntity<>(kodeBarang + " Deleted",HttpStatus.OK);
